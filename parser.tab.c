@@ -72,6 +72,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ast.h"
 
 extern int yylex();
 extern int yyparse();
@@ -79,7 +80,7 @@ void yyerror(const char* s);
 
 extern int line, column;
 
-#line 83 "parser.tab.c"
+#line 84 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -515,8 +516,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    27,    27,    32,    33,    34,    35,    36,    37,    38,
-      43,    44,    49,    50,    55,    60,    61,    66,    67
+       0,    31,    31,    41,    42,    43,    44,    45,    46,    47,
+      53,    54,    59,    60,    70,    76,    77,    83,    84
 };
 #endif
 
@@ -1087,13 +1088,121 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* json_text: value  */
-#line 27 "parser.y"
-                           { printf("Valid JSON\n"); }
-#line 1093 "parser.tab.c"
+#line 31 "parser.y"
+            { 
+          printf("Valid JSON\n");
+          extern ASTNode* ast_root;
+          ast_root = (yyvsp[0].node);
+      }
+#line 1098 "parser.tab.c"
+    break;
+
+  case 3: /* value: object  */
+#line 41 "parser.y"
+                                   { (yyval.node) = (yyvsp[0].node); }
+#line 1104 "parser.tab.c"
+    break;
+
+  case 4: /* value: array  */
+#line 42 "parser.y"
+                                   { (yyval.node) = (yyvsp[0].node); }
+#line 1110 "parser.tab.c"
+    break;
+
+  case 5: /* value: STRING  */
+#line 43 "parser.y"
+                                   { (yyval.node) = create_value_node(AST_STRING, (yyvsp[0].strval)); }
+#line 1116 "parser.tab.c"
+    break;
+
+  case 6: /* value: NUMBER  */
+#line 44 "parser.y"
+                                   { (yyval.node) = create_value_node(AST_NUMBER, (yyvsp[0].strval)); }
+#line 1122 "parser.tab.c"
+    break;
+
+  case 7: /* value: TRUE  */
+#line 45 "parser.y"
+                                   { (yyval.node) = create_node(AST_TRUE); }
+#line 1128 "parser.tab.c"
+    break;
+
+  case 8: /* value: FALSE  */
+#line 46 "parser.y"
+                                   { (yyval.node) = create_node(AST_FALSE); }
+#line 1134 "parser.tab.c"
+    break;
+
+  case 9: /* value: NULL_TOK  */
+#line 47 "parser.y"
+                                   { (yyval.node) = create_node(AST_NULL); }
+#line 1140 "parser.tab.c"
+    break;
+
+  case 10: /* object: LBRACE RBRACE  */
+#line 53 "parser.y"
+                                         { (yyval.node) = create_node(AST_OBJECT); }
+#line 1146 "parser.tab.c"
+    break;
+
+  case 11: /* object: LBRACE members RBRACE  */
+#line 54 "parser.y"
+                                         { (yyval.node) = create_node(AST_OBJECT); (yyval.node)->children = (yyvsp[-1].node); }
+#line 1152 "parser.tab.c"
+    break;
+
+  case 12: /* members: pair  */
+#line 59 "parser.y"
+                                   { (yyval.node) = (yyvsp[0].node); }
+#line 1158 "parser.tab.c"
+    break;
+
+  case 13: /* members: members COMMA pair  */
+#line 60 "parser.y"
+                                  { (yyval.node) = (yyvsp[-2].node); 
+                                    ASTNode* temp = (yyvsp[-2].node);
+                                    while (temp->next) temp = temp->next;
+                                    temp->next = (yyvsp[0].node);
+                                  }
+#line 1168 "parser.tab.c"
+    break;
+
+  case 14: /* pair: STRING COLON value  */
+#line 70 "parser.y"
+                                         { (yyval.node) = create_pair((yyvsp[-2].strval), (yyvsp[0].node)); }
+#line 1174 "parser.tab.c"
+    break;
+
+  case 15: /* array: LBRACKET RBRACKET  */
+#line 76 "parser.y"
+                                         { (yyval.node) = create_node(AST_ARRAY); }
+#line 1180 "parser.tab.c"
+    break;
+
+  case 16: /* array: LBRACKET elements RBRACKET  */
+#line 77 "parser.y"
+                                         { (yyval.node) = create_node(AST_ARRAY); (yyval.node)->children = (yyvsp[-1].node); }
+#line 1186 "parser.tab.c"
+    break;
+
+  case 17: /* elements: value  */
+#line 83 "parser.y"
+                                   { (yyval.node) = (yyvsp[0].node); }
+#line 1192 "parser.tab.c"
+    break;
+
+  case 18: /* elements: elements COMMA value  */
+#line 84 "parser.y"
+                                  { (yyval.node) = (yyvsp[-2].node);
+                                    ASTNode* temp = (yyvsp[-2].node);
+                                    while (temp->next) temp = temp->next;
+                                    temp->next = (yyvsp[0].node);
+                                  }
+#line 1202 "parser.tab.c"
     break;
 
 
-#line 1097 "parser.tab.c"
+#line 1206 "parser.tab.c"
 
       default: break;
     }
@@ -1286,8 +1395,11 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 70 "parser.y"
+#line 91 "parser.y"
 
+
+ASTNode* ast_root = NULL;
+int print_ast_flag = 0;  // Set by --print-ast
 
 // Error handler
 extern int token_start_column;
@@ -1297,12 +1409,21 @@ void yyerror(const char* s) {
 }
 
 
-int main() {
+int main(int argc, char** argv) {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--print-ast") == 0) {
+            print_ast_flag = 1;
+        }
+    }
+
     if (yyparse() == 0) {
-        // Parsing succeeded
+        if (print_ast_flag && ast_root) {
+            printf("\n=== AST ===\n");
+            print_ast(ast_root, 0);
+        }
         return 0;
     } else {
-        // Parsing failed
         return 1;
     }
 }
+
