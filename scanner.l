@@ -13,8 +13,13 @@ void update_position(char *yytext);
 %option noyywrap
 
 %%
+"\xEF\xBB\xBF"       { /* Skip UTF-8 BOM */ }
+
 [ \t]+               { update_position(yytext); }
-\n                   { line++; column = 1; }
+\r\n               { line++; column = 1; }
+\r                 { line++; column = 1; }
+\n                 { line++; column = 1; }
+
 
 "{"                  { token_start_column = column; column++; return LBRACE; }
 "}"                  { token_start_column = column; column++; return RBRACE; }
@@ -42,9 +47,15 @@ void update_position(char *yytext);
 }
 
 . {
-    fprintf(stderr, "Lexical error at line %d, column %d: unexpected character '%c'\n", line, column, *yytext);
+    unsigned char bad = *yytext;
+    if (bad >= 32 && bad <= 126) {
+        fprintf(stderr, "Lexical error at line %d, column %d: unexpected character '%c'\n", line, column, bad);
+    } else {
+        fprintf(stderr, "Lexical error at line %d, column %d: unexpected byte 0x%02X\n", line, column, bad);
+    }
     exit(1);
 }
+
 %%
 
 void update_position(char *yytext) {

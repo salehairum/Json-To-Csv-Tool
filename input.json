@@ -5,4 +5,14 @@
         "C",
         "Python"
     ]
+    "object_array:": [
+        {
+            "name": "Paarsa",
+            "age": 17
+        }
+        {
+            "name": "Sofia",
+            "age": 14
+        }
+    ]
 }

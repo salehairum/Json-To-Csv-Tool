@@ -1290,9 +1290,12 @@ yyreturnlab:
 
 
 // Error handler
+extern int token_start_column;
+
 void yyerror(const char* s) {
-    fprintf(stderr, "Syntax error at line %d, column %d: %s\n", line, column, s);
+    fprintf(stderr, "Syntax error at line %d, column %d: %s\n", line, token_start_column, s);
 }
+
 
 int main() {
     if (yyparse() == 0) {
