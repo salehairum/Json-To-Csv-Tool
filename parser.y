@@ -4,6 +4,7 @@
 #include <string.h>
 #include "ast.h"
 
+
 extern int yylex();
 extern int yyparse();
 void yyerror(const char* s);
@@ -89,6 +90,9 @@ elements:
     ;
 
 %%
+#include "ast.h"
+#include "schema.h"
+#include "semantics.h"
 
 ASTNode* ast_root = NULL;
 int print_ast_flag = 0;  // Set by --print-ast
@@ -102,19 +106,38 @@ void yyerror(const char* s) {
 
 
 int main(int argc, char** argv) {
-    for (int i = 1; i < argc; ++i) {
-        if (strcmp(argv[i], "--print-ast") == 0) {
+    for (int i = 1; i < argc; ++i) 
+    {
+        if (strcmp(argv[i], "--print-ast") == 0) 
+        {
             print_ast_flag = 1;
         }
     }
 
-    if (yyparse() == 0) {
-        if (print_ast_flag && ast_root) {
+    if (yyparse() == 0) 
+    {
+        if (print_ast_flag && ast_root) 
+        {
             printf("\n=== AST ===\n");
             print_ast(ast_root, 0);
         }
+
+        // Semantic analysis (convert AST to relational tables)
+        process_ast_with_key("root", ast_root, NULL, -1);
+
+
+        // Print the result for now (Step 4 CSV comes later)
+        Table* t = get_all_tables();
+        print_all_tables(t);
+        while (t)
+        {
+            write_table_to_csv(t, "output/");
+            t = t->next;
+        }
         return 0;
-    } else {
+    } 
+    else 
+    {
         return 1;
     }
 }

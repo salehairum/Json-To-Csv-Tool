@@ -74,13 +74,14 @@
 #include <string.h>
 #include "ast.h"
 
+
 extern int yylex();
 extern int yyparse();
 void yyerror(const char* s);
 
 extern int line, column;
 
-#line 84 "parser.tab.c"
+#line 85 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -516,8 +517,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    31,    31,    41,    42,    43,    44,    45,    46,    47,
-      53,    54,    59,    60,    70,    76,    77,    83,    84
+       0,    32,    32,    42,    43,    44,    45,    46,    47,    48,
+      54,    55,    60,    61,    71,    77,    78,    84,    85
 };
 #endif
 
@@ -1088,121 +1089,121 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* json_text: value  */
-#line 31 "parser.y"
+#line 32 "parser.y"
             { 
           printf("Valid JSON\n");
           extern ASTNode* ast_root;
           ast_root = (yyvsp[0].node);
       }
-#line 1098 "parser.tab.c"
+#line 1099 "parser.tab.c"
     break;
 
   case 3: /* value: object  */
-#line 41 "parser.y"
+#line 42 "parser.y"
                                    { (yyval.node) = (yyvsp[0].node); }
-#line 1104 "parser.tab.c"
+#line 1105 "parser.tab.c"
     break;
 
   case 4: /* value: array  */
-#line 42 "parser.y"
+#line 43 "parser.y"
                                    { (yyval.node) = (yyvsp[0].node); }
-#line 1110 "parser.tab.c"
+#line 1111 "parser.tab.c"
     break;
 
   case 5: /* value: STRING  */
-#line 43 "parser.y"
+#line 44 "parser.y"
                                    { (yyval.node) = create_value_node(AST_STRING, (yyvsp[0].strval)); }
-#line 1116 "parser.tab.c"
+#line 1117 "parser.tab.c"
     break;
 
   case 6: /* value: NUMBER  */
-#line 44 "parser.y"
+#line 45 "parser.y"
                                    { (yyval.node) = create_value_node(AST_NUMBER, (yyvsp[0].strval)); }
-#line 1122 "parser.tab.c"
+#line 1123 "parser.tab.c"
     break;
 
   case 7: /* value: TRUE  */
-#line 45 "parser.y"
+#line 46 "parser.y"
                                    { (yyval.node) = create_node(AST_TRUE); }
-#line 1128 "parser.tab.c"
+#line 1129 "parser.tab.c"
     break;
 
   case 8: /* value: FALSE  */
-#line 46 "parser.y"
+#line 47 "parser.y"
                                    { (yyval.node) = create_node(AST_FALSE); }
-#line 1134 "parser.tab.c"
+#line 1135 "parser.tab.c"
     break;
 
   case 9: /* value: NULL_TOK  */
-#line 47 "parser.y"
+#line 48 "parser.y"
                                    { (yyval.node) = create_node(AST_NULL); }
-#line 1140 "parser.tab.c"
+#line 1141 "parser.tab.c"
     break;
 
   case 10: /* object: LBRACE RBRACE  */
-#line 53 "parser.y"
+#line 54 "parser.y"
                                          { (yyval.node) = create_node(AST_OBJECT); }
-#line 1146 "parser.tab.c"
+#line 1147 "parser.tab.c"
     break;
 
   case 11: /* object: LBRACE members RBRACE  */
-#line 54 "parser.y"
+#line 55 "parser.y"
                                          { (yyval.node) = create_node(AST_OBJECT); (yyval.node)->children = (yyvsp[-1].node); }
-#line 1152 "parser.tab.c"
+#line 1153 "parser.tab.c"
     break;
 
   case 12: /* members: pair  */
-#line 59 "parser.y"
+#line 60 "parser.y"
                                    { (yyval.node) = (yyvsp[0].node); }
-#line 1158 "parser.tab.c"
+#line 1159 "parser.tab.c"
     break;
 
   case 13: /* members: members COMMA pair  */
-#line 60 "parser.y"
+#line 61 "parser.y"
                                   { (yyval.node) = (yyvsp[-2].node); 
                                     ASTNode* temp = (yyvsp[-2].node);
                                     while (temp->next) temp = temp->next;
                                     temp->next = (yyvsp[0].node);
                                   }
-#line 1168 "parser.tab.c"
+#line 1169 "parser.tab.c"
     break;
 
   case 14: /* pair: STRING COLON value  */
-#line 70 "parser.y"
+#line 71 "parser.y"
                                          { (yyval.node) = create_pair((yyvsp[-2].strval), (yyvsp[0].node)); }
-#line 1174 "parser.tab.c"
+#line 1175 "parser.tab.c"
     break;
 
   case 15: /* array: LBRACKET RBRACKET  */
-#line 76 "parser.y"
+#line 77 "parser.y"
                                          { (yyval.node) = create_node(AST_ARRAY); }
-#line 1180 "parser.tab.c"
+#line 1181 "parser.tab.c"
     break;
 
   case 16: /* array: LBRACKET elements RBRACKET  */
-#line 77 "parser.y"
+#line 78 "parser.y"
                                          { (yyval.node) = create_node(AST_ARRAY); (yyval.node)->children = (yyvsp[-1].node); }
-#line 1186 "parser.tab.c"
+#line 1187 "parser.tab.c"
     break;
 
   case 17: /* elements: value  */
-#line 83 "parser.y"
+#line 84 "parser.y"
                                    { (yyval.node) = (yyvsp[0].node); }
-#line 1192 "parser.tab.c"
+#line 1193 "parser.tab.c"
     break;
 
   case 18: /* elements: elements COMMA value  */
-#line 84 "parser.y"
+#line 85 "parser.y"
                                   { (yyval.node) = (yyvsp[-2].node);
                                     ASTNode* temp = (yyvsp[-2].node);
                                     while (temp->next) temp = temp->next;
                                     temp->next = (yyvsp[0].node);
                                   }
-#line 1202 "parser.tab.c"
+#line 1203 "parser.tab.c"
     break;
 
 
-#line 1206 "parser.tab.c"
+#line 1207 "parser.tab.c"
 
       default: break;
     }
@@ -1395,8 +1396,11 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 91 "parser.y"
+#line 92 "parser.y"
 
+#include "ast.h"
+#include "schema.h"
+#include "semantics.h"
 
 ASTNode* ast_root = NULL;
 int print_ast_flag = 0;  // Set by --print-ast
@@ -1410,19 +1414,38 @@ void yyerror(const char* s) {
 
 
 int main(int argc, char** argv) {
-    for (int i = 1; i < argc; ++i) {
-        if (strcmp(argv[i], "--print-ast") == 0) {
+    for (int i = 1; i < argc; ++i) 
+    {
+        if (strcmp(argv[i], "--print-ast") == 0) 
+        {
             print_ast_flag = 1;
         }
     }
 
-    if (yyparse() == 0) {
-        if (print_ast_flag && ast_root) {
+    if (yyparse() == 0) 
+    {
+        if (print_ast_flag && ast_root) 
+        {
             printf("\n=== AST ===\n");
             print_ast(ast_root, 0);
         }
+
+        // Semantic analysis (convert AST to relational tables)
+        process_ast_with_key("root", ast_root, NULL, -1);
+
+
+        // Print the result for now (Step 4 CSV comes later)
+        Table* t = get_all_tables();
+        print_all_tables(t);
+        while (t)
+        {
+            write_table_to_csv(t, "output/");
+            t = t->next;
+        }
         return 0;
-    } else {
+    } 
+    else 
+    {
         return 1;
     }
 }

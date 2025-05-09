@@ -487,12 +487,14 @@ char *yytext;
 #include <stdlib.h>
 #include <string.h>
 
-int line = 1, column = 1;
-int token_start_column;
+int line = 1;
+int column = 1;
+int token_start_column = 0;
+char* raw = NULL;
 
 void update_position(char *yytext);
-#line 495 "lex.yy.c"
-#line 496 "lex.yy.c"
+#line 497 "lex.yy.c"
+#line 498 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -709,9 +711,10 @@ YY_DECL
 		}
 
 	{
-#line 15 "scanner.l"
+#line 17 "scanner.l"
 
-#line 715 "lex.yy.c"
+
+#line 718 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -770,90 +773,92 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 16 "scanner.l"
+#line 19 "scanner.l"
 { /* Skip UTF-8 BOM */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "scanner.l"
+#line 21 "scanner.l"
 { update_position(yytext); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 19 "scanner.l"
+#line 22 "scanner.l"
 { line++; column = 1; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 "scanner.l"
+#line 23 "scanner.l"
 { line++; column = 1; }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 21 "scanner.l"
+#line 24 "scanner.l"
 { line++; column = 1; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 24 "scanner.l"
+#line 26 "scanner.l"
 { token_start_column = column; column++; return LBRACE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 25 "scanner.l"
+#line 27 "scanner.l"
 { token_start_column = column; column++; return RBRACE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 26 "scanner.l"
+#line 28 "scanner.l"
 { token_start_column = column; column++; return LBRACKET; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 27 "scanner.l"
+#line 29 "scanner.l"
 { token_start_column = column; column++; return RBRACKET; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 28 "scanner.l"
+#line 30 "scanner.l"
 { token_start_column = column; column++; return COLON; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 29 "scanner.l"
+#line 31 "scanner.l"
 { token_start_column = column; column++; return COMMA; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 31 "scanner.l"
+#line 33 "scanner.l"
 { token_start_column = column; column += yyleng; return TRUE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 32 "scanner.l"
+#line 34 "scanner.l"
 { token_start_column = column; column += yyleng; return FALSE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 33 "scanner.l"
+#line 35 "scanner.l"
 { token_start_column = column; column += yyleng; return NULL_TOK; }
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 37 "scanner.l"
 {
     token_start_column = column;
-    yylval.strval = strdup(yytext);
+    raw = yytext;               // Use the global `raw`
+    raw[yyleng - 1] = '\0';      // Remove trailing quote
+    yylval.strval = strdup(raw + 1);  // Skip leading quote
     column += yyleng;
     return STRING;
 }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 42 "scanner.l"
+#line 46 "scanner.l"
 {
     token_start_column = column;
     yylval.strval = strdup(yytext);
@@ -863,7 +868,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 49 "scanner.l"
+#line 53 "scanner.l"
 {
     unsigned char bad = *yytext;
     if (bad >= 32 && bad <= 126) {
@@ -876,10 +881,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 63 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 883 "lex.yy.c"
+#line 888 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1884,7 +1889,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 59 "scanner.l"
+#line 63 "scanner.l"
 
 
 void update_position(char *yytext) {

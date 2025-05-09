@@ -1,18 +1,7 @@
 {
-    "name": "Saleha",
-    "age": 21,
-    "skills": [
-        "C",
-        "Python"
-    ],
-    "object_array": [
-        {
-            "name": "Paarsa",
-            "age": 17
-        },
-        {
-            "name": "Sofia",
-            "age": 14
-        }
+    " orderId ": 7 ,
+    " items ": [
+        {" sku ": " X1 " , " qty ": 2} ,
+        {" sku ": " Y9 " , " qty ": 1}
     ]
 }

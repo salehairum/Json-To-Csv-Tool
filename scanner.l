@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-int line = 1, column = 1;
-int token_start_column;
+int line = 1;
+int column = 1;
+int token_start_column = 0;
+char* raw = NULL;
 
 void update_position(char *yytext);
 %}
@@ -13,13 +15,13 @@ void update_position(char *yytext);
 %option noyywrap
 
 %%
+
 "\xEF\xBB\xBF"       { /* Skip UTF-8 BOM */ }
 
 [ \t]+               { update_position(yytext); }
 \r\n               { line++; column = 1; }
 \r                 { line++; column = 1; }
 \n                 { line++; column = 1; }
-
 
 "{"                  { token_start_column = column; column++; return LBRACE; }
 "}"                  { token_start_column = column; column++; return RBRACE; }
@@ -34,7 +36,9 @@ void update_position(char *yytext);
 
 \"([^\\\"]|\\["\\/bfnrt]|\\u[0-9a-fA-F]{4})*\" {
     token_start_column = column;
-    yylval.strval = strdup(yytext);
+    raw = yytext;               // Use the global `raw`
+    raw[yyleng - 1] = '\0';      // Remove trailing quote
+    yylval.strval = strdup(raw + 1);  // Skip leading quote
     column += yyleng;
     return STRING;
 }
